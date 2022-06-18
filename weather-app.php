@@ -17,7 +17,7 @@ $new_date = date('Y-m-d', strtotime($_POST['dateFrom']));
 if ($new_date == date('Y-m-d',strtotime("1970-01-01"))){
   $new_date = date('Y-m-d');
 }
-$lastweek = "SELECT round(avg(tmp),2)as tmp,round(avg(hum),2)as hum,round(avg(pre),2)as pre FROM temp WHERE date BETWEEN  date_sub('$new_date', interval 7 day)  AND '$new_date';";
+$lastweek = "SELECT round(avg(tmp),2)as tmp,round(avg(hum),2)as hum,round(avg(pre),2)as pre FROM temp WHERE date BETWEEN  date_sub('$new_date', interval 7 day)  AND date_add('$new_date', interval 1 day );";
 //$lastday = "SELECT round(avg(tmp),2)as tmp,round(avg(hum),2)as hum,round(avg(pre),2)as pre FROM temp WHERE date BETWEEN '$new_date' AND date_add('$new_date', interval 1 day); ";
 $lastdaygraph = "SELECT DAY(date) as dbTime, round(avg(tmp),2)as tmp,round(avg(hum),2)as hum,round(avg(pre),2)as pre FROM temp WHERE date BETWEEN date_sub('$new_date', interval 7 day ) AND date_add('$new_date', interval 1 day ) GROUP BY dbTime  ORDER BY dbTime DESC; ";
 

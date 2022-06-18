@@ -19,7 +19,7 @@ if ($new_date == date('Y-m-d',strtotime("1970-01-01"))){
 }
 
 //Dzień z guziczków średnia
-$lastday = "SELECT round(avg(tmp),2)as tmp,round(avg(hum),2)as hum,round(avg(pre),2)as pre FROM temp WHERE date BETWEEN '$new_date' AND date_add('$new_date', interval 1 day); ";
+$lastday = "SELECT round(avg(tmp),2)as tmp,round(avg(hum),2)as hum,round(avg(pre),2)as pre FROM temp WHERE id%2=0 AND date BETWEEN '$new_date' AND date_add('$new_date', interval 1 day ) AND HOUR(date) BETWEEN 6 AND 22;";
 //Dzień z guziczków wykresik
 $lastdaygraph = "SELECT id, TIME(date) as dbTime, tmp, pre, hum FROM temp WHERE date BETWEEN '$new_date' AND date_add('$new_date', interval 1 day )AND id%2=0 ORDER BY id DESC; ";
 //mysql z zmiennymi do sredniej
@@ -39,11 +39,12 @@ while ($db = mysqli_fetch_array($resultoldgraph)){
 	$preoldg[] = $db['pre'];
 	$humoldg[] = $db['hum'];
 }
-// srednia z dnia
-// SELECT round(avg(tmp),2)as tmp FROM temp WHERE id%2=0 AND date BETWEEN '2022-06-17' AND date_add('2022-06-17', interval 1 day) AND HOUR(date) BETWEEN 8 AND 22; 
 
-//
+// Max min temp pre hum
 $selectedday = "SELECT round(max(tmp),2)as tmpmax,round(max(hum),2)as hummax,round(max(pre),2)as premax,round(min(tmp),2)as tmpmin,round(min(hum),2)as hummin,round(min(pre),2)as premin FROM temp WHERE date BETWEEN '$new_date' AND date_add('$new_date', interval 1 day);  ";
+
+//Nowa srednia od 8:00 do 22:00
+// "SELECT round(avg(tmp),2)as tmp,round(avg(hum),2)as hum,round(avg(pre),2)as pre FROM temp WHERE id%2=0 AND date BETWEEN '$new_date' AND date_add('$new_date', interval 1 day ) AND HOUR(date) BETWEEN 8 AND 22; ";
 $resultmaxmin = mysqli_query($link, $selectedday);
 while ($db = mysqli_fetch_array($resultmaxmin)){
   $tmpmax[] = $db['tmpmax'];
@@ -134,7 +135,6 @@ width: 25vw;
 }
 .srednia{
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
-
   border-radius: 10px;
   background-color: #4408ca;
   display: flex;
@@ -271,7 +271,23 @@ button:active {
     <h6>aktualizacja: <?php echo $timestampsTime[0];?> </h6>
   </div>
   <div class="maxmin">
-  <h1>Dane z dziś:</h1>
+  
+  <!-- <h1 style="margin-bottom:0px ;">Dane z dnia:</h1> -->
+  
+ 
+  <?php 
+  if($new_date!=date('Y-m-d')){
+    echo '<h1 style="margin-bottom:0px ;">Dane z dnia:</h1>';
+    echo' <p>';
+    echo$new_date=date('d-m-Y', strtotime($new_date));
+    echo '</p>';
+  }
+  else{
+    echo '<h1>Dane z dzisiaj:</h1>';
+  }
+  ?>
+
+
   <table style="margin-bottom: 10px;">
       <tr>
         <td><?php echo round($tmpmax[0], 1); ?> &deg;C ↑</td>
@@ -291,8 +307,17 @@ button:active {
   </div>
 
   <div class="srednia">
-    <h1 style="margin-bottom:0px ;">Średnia z dnia:</h1>
-    <p ><?php echo $new_date?></p>
+  <?php 
+  if($new_date!=date('Y-m-d')){
+    echo '<h1 style="margin-bottom:0px ;">Średnia z dnia (6⁰⁰-22⁰⁰):</h1>';
+    echo' <p>';
+    echo$new_date=date('d-m-Y', strtotime($new_date));
+    echo '</p>';
+  }
+  else{
+    echo '<h1>Średnia  z dzisiaj (6⁰⁰-22⁰⁰):</h1>';
+  }
+  ?>
     <table>
       <tr>
         <td width='150'><b>Temperatura:</b></td><td><?php echo round($tmpold[0], 1); ?> &deg;C</td>
@@ -310,12 +335,23 @@ button:active {
 
 <div class="menu">
   <div>
-      Wybierz datę:
+      Data:
   </div>
   <form class="filter" name="Filter" method="POST">
     <button type="submit" name="dateFrom" value="<?php echo ($new_date=date('d-m-Y', strtotime('-1 day', strtotime($new_date)))); ?>"> <</button>
-    <?php echo$new_date=date('d-m-Y', strtotime($new_date.'+1 day'))?>
-    <button type="submit" name="dateFrom" value="<?php echo ($new_date=date('d-m-Y', strtotime($new_date.'+1 day'))); ?>"> ></button>
+    <?php 
+    if($new_date!=date('d-m-Y',strtotime('-1 day'))){
+      echo$new_date=date('d-m-Y', strtotime($new_date.'+1 day'));
+      echo '<button type="submit" name="dateFrom" value='.$new_date=date('d-m-Y', strtotime($new_date.'+1 day')).'>></button>';
+      echo '<button type="submit">Dziś</button>';
+
+    }
+    else{
+      echo 'Dzisiaj';
+    }
+    ?>
+    
+    <!-- <button type="submit" name="dateFrom" value="<?php echo ($new_date=date('d-m-Y', strtotime($new_date.'+1 day'))); ?>"> ></button> -->
   </form>
 </div>
 
