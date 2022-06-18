@@ -39,6 +39,21 @@ while ($db = mysqli_fetch_array($resultoldgraph)){
 	$preoldg[] = $db['pre'];
 	$humoldg[] = $db['hum'];
 }
+// srednia z dnia
+// SELECT round(avg(tmp),2)as tmp FROM temp WHERE id%2=0 AND date BETWEEN '2022-06-17' AND date_add('2022-06-17', interval 1 day) AND HOUR(date) BETWEEN 8 AND 22; 
+
+//
+$selectedday = "SELECT round(max(tmp),2)as tmpmax,round(max(hum),2)as hummax,round(max(pre),2)as premax,round(min(tmp),2)as tmpmin,round(min(hum),2)as hummin,round(min(pre),2)as premin FROM temp WHERE date BETWEEN '$new_date' AND date_add('$new_date', interval 1 day);  ";
+$resultmaxmin = mysqli_query($link, $selectedday);
+while ($db = mysqli_fetch_array($resultmaxmin)){
+  $tmpmax[] = $db['tmpmax'];
+  $tmpmin[] = $db['tmpmin'];
+	$premax[] = $db['premax'];
+  $premin[] = $db['premin'];
+	$hummax[] = $db['hummax'];
+  $hummin[] = $db['hummin'];
+}
+
 ?>
 
 <!DOCTYPE HTML>
@@ -88,25 +103,45 @@ a:hover:not(.active) {
     display: flex;
     color: white;
     padding: 1vw;
-    flex-direction: column;
+    flex-direction: row;
     border-radius: 5px;
-    align-items: center;
     align-self: center;
-    background-color: #4408ca;
-    width: 40vw;
+    justify-content: space-around;
+    width: 90vw;
     margin: 10px;
 }
-.zmiana{
-    display: flex;
-    color: white;
-    padding: 1vw;
-    flex-direction: column;
-    border-radius: 5px;
-    align-items: center;
-    align-self: center;
-    background-color: #4408ca;
-    width: 40vw;
-    margin: 10px;
+.akt{
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+
+background-color: #4408ca;
+  display: flex;
+flex-direction: column;
+align-items: center;
+padding: 1vw;
+border-radius: 10px;
+width: 25vw;
+}
+.maxmin{
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+
+  border-radius: 10px;
+  background-color: #4408ca;
+  display: flex;
+flex-direction: column;
+align-items: center;
+padding:1vw;
+width: 25vw;
+}
+.srednia{
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+
+  border-radius: 10px;
+  background-color: #4408ca;
+  display: flex;
+flex-direction: column;
+align-items: center;
+padding:1vw;
+width: 25vw;
 }
 
 h2{
@@ -118,6 +153,8 @@ align-self:center;
   overflow: scroll;
 }
 .menu{
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+
   align-self: center;
 padding: 10px;
 display: flex;
@@ -150,11 +187,42 @@ button:active {
   transition: 0.1s;
 }
 @media screen and (max-width: 1000px) {
-    .zmiana{
-        width: 90%;
+  .aktualne{
+    width: 98vw;
+    font-size: 75%;
+  }
+  .dane{
+      overflow: scroll;
+      width:95%;
+    }
+    .akt{
+      width: 30vw;
+    }
+    .maxmin{
+      width: 30vw;
+    }
+    .srednia{
+      width: 30vw;
+    }
+}
+@media screen and (max-width: 500px) {
+    .srednia{
+      margin-bottom: 10px;
+      width: 85vw;
     }
     .aktualne{
-        width: 90%;
+      flex-direction: column;
+      width: 95%;
+      align-items: center;
+      height: 60vh;
+    }
+    .akt{
+      margin-bottom: 10px;
+      width: 85vw;
+    }
+    .maxmin{
+      margin-bottom: 10px;
+      width: 85vw;
     }
     h2{
         margin:5vw;
@@ -187,36 +255,57 @@ button:active {
 
 </div>
 <div class="aktualne">
-    <h2>Warunki Aktualne:</h2>
-<table>
-  <tr>
-    <td width='200'><b>Temperatura:</b></td><td><?php echo round($temperatures[0], 1); ?> &deg;C</td>
-  </tr>
-  <tr>
-    <td><b>Ciśnienie:</b> </td><td><?php echo round($pressure[0], 2); ?> kPa 
-  </tr>
-  <tr>
-    <td><b>Wilgotność:</b></td><td><?php echo round($humidity[0], 1); ?> %</td>
-  </tr>
-</table>
-<h6>aktualizacja: <?php echo $timestampsTime[0];?> </h6>
-</div>
-
-<div class="zmiana">
-    <h2>Średnia z dnia:</h2>
-    <?php echo $new_date?>
+  <div class="akt">
+    <h1>Warunki Aktualne:</h1>
     <table>
-  <tr>
-    <td width='200'><b>Temperatura:</b></td><td><?php echo round($tmpold[0], 1); ?> &deg;C</td>
-  </tr>
-  <tr>
-    <td><b>Ciśnienie:</b> </td><td><?php echo round($preold[0], 2); ?> kPa 
-  </tr>
-  <tr>
-    <td><b>Wilgotność:</b></td><td><?php echo round($humold[0], 1); ?> %</td>
-  </tr>
-</table>
-<br>
+      <tr>
+        <td width='150'><b>Temperatura:</b></td><td><?php echo round($temperatures[0], 1); ?> &deg;C</td>
+      </tr>
+      <tr>
+        <td><b>Ciśnienie:</b> </td><td><?php echo round($pressure[0], 2); ?> kPa 
+      </tr>
+      <tr>
+        <td><b>Wilgotność:</b></td><td><?php echo round($humidity[0], 1); ?> %</td>
+      </tr>
+    </table>
+    <h6>aktualizacja: <?php echo $timestampsTime[0];?> </h6>
+  </div>
+  <div class="maxmin">
+  <h1>Dane z dziś:</h1>
+  <table style="margin-bottom: 10px;">
+      <tr>
+        <td><?php echo round($tmpmax[0], 1); ?> &deg;C ↑</td>
+        <td><?php echo round($tmpmin[0], 1); ?> &deg;C ↓</td>
+      </tr>
+      
+      <tr>
+        <td><?php echo round($premax[0], 2); ?> kPa ↑  </td>
+        <td><?php echo round($premin[0], 2); ?> kPa ↓ </td>
+      </tr>
+      <tr>
+        <td><?php echo round($hummax[0], 1); ?> % ↑</td>
+        <td><?php echo round($hummin[0], 1); ?> % ↓</td>
+      </tr>
+      <tr></tr>
+    </table>
+  </div>
+
+  <div class="srednia">
+    <h1 style="margin-bottom:0px ;">Średnia z dnia:</h1>
+    <p ><?php echo $new_date?></p>
+    <table>
+      <tr>
+        <td width='150'><b>Temperatura:</b></td><td><?php echo round($tmpold[0], 1); ?> &deg;C</td>
+      </tr>
+      <tr>
+        <td><b>Ciśnienie:</b> </td><td><?php echo round($preold[0], 2); ?> kPa 
+      </tr>
+      <tr>
+        <td><b>Wilgotność:</b></td><td><?php echo round($humold[0], 1); ?> %</td>
+      </tr>
+    </table>
+    <br>
+  </div>
 </div>
 
 <div class="menu">
