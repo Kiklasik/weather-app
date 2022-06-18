@@ -108,7 +108,7 @@ a:hover:not(.active) {
     border-radius: 5px;
     align-self: center;
     justify-content: space-around;
-    width: 90vw;
+    width: 98vw;
     margin: 10px;
 }
 .akt{
@@ -120,7 +120,7 @@ flex-direction: column;
 align-items: center;
 padding: 1vw;
 border-radius: 10px;
-width: 25vw;
+width: 30vw;
 }
 .maxmin{
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
@@ -131,7 +131,7 @@ width: 25vw;
 flex-direction: column;
 align-items: center;
 padding:1vw;
-width: 25vw;
+width: 30vw;
 }
 .srednia{
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
@@ -141,7 +141,7 @@ width: 25vw;
 flex-direction: column;
 align-items: center;
 padding:1vw;
-width: 25vw;
+width: 30vw;
 }
 
 h2{
@@ -214,7 +214,7 @@ button:active {
       flex-direction: column;
       width: 95%;
       align-items: center;
-      height: 60vh;
+      height: 140vw;
     }
     .akt{
       margin-bottom: 10px;
@@ -290,7 +290,7 @@ button:active {
 
   <table style="margin-bottom: 10px;">
       <tr>
-        <td><?php echo round($tmpmax[0], 1); ?> &deg;C ↑</td>
+        <td width='130'><?php echo round($tmpmax[0], 1); ?> &deg;C ↑</td>
         <td><?php echo round($tmpmin[0], 1); ?> &deg;C ↓</td>
       </tr>
       
@@ -309,13 +309,13 @@ button:active {
   <div class="srednia">
   <?php 
   if($new_date!=date('Y-m-d')){
-    echo '<h1 style="margin-bottom:0px ;">Średnia z dnia (6⁰⁰-22⁰⁰):</h1>';
+    echo '<h1 style="margin-bottom:0px ;">Średnia z dnia :</h1>';
     echo' <p>';
     echo$new_date=date('d-m-Y', strtotime($new_date));
     echo '</p>';
   }
   else{
-    echo '<h1>Średnia  z dzisiaj (6⁰⁰-22⁰⁰):</h1>';
+    echo '<h1>Średnia z dzisiaj:</h1>';
   }
   ?>
     <table>
@@ -347,7 +347,7 @@ button:active {
 
     }
     else{
-      echo 'Dzisiaj';
+      echo '<p style="margin-right:40px;margin-bottom:0px;margin-top:0px">Dzisiaj</p>';
     }
     ?>
     
